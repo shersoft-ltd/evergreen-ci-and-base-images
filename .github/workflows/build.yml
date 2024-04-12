@@ -161,6 +161,4 @@ jobs:
           REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
           RUNTIME: ${{ matrix.image.runtime }}
           VERSION: ${{ matrix.image.version }}
-        run: |
-          docker manifest create ${REGISTRY}/${RUNTIME}:draft-${{ matrix.image.version }}-${{ github.sha }} ${REGISTRY}/${RUNTIME}:${VERSION}
-          docker manifest push ${REGISTRY}/${RUNTIME}:${VERSION}
+        run: docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${{ matrix.image.version }}-${{ github.sha }}
