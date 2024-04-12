@@ -28,9 +28,9 @@ jobs:
           - runtime: node-ci-cd
             version: 20
           - runtime: python
-            version: 3.12
+            version: 3.11
           - runtime: python
-            version: 3.13
+            version: 3.12
       fail-fast: false
 
     steps:
@@ -86,9 +86,9 @@ jobs:
           - runtime: node
             version: 20
           - runtime: python
-            version: 3.12
+            version: 3.11
           - runtime: python
-            version: 3.13
+            version: 3.12
       fail-fast: false
 
     steps:
@@ -127,9 +127,9 @@ jobs:
           - runtime: node
             version: 20
           - runtime: python
-            version: 3.12
+            version: 3.11
           - runtime: python
-            version: 3.13
+            version: 3.12
       fail-fast: false
 
     if: github.ref == 'refs/heads/main' && github.event_name == 'schedule'
