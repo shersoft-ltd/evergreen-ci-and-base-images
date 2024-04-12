@@ -162,3 +162,14 @@ jobs:
           RUNTIME: ${{ matrix.image.runtime }}
           VERSION: ${{ matrix.image.version }}
         run: docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${{ matrix.image.version }}-${{ github.sha }}
+
+      - name: Remove draft tag
+        env:
+          REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
+          RUNTIME: ${{ matrix.image.runtime }}
+          VERSION: ${{ matrix.image.version }}
+        run: |
+          aws ecr \
+            batch-delete-image \
+            --repository-name ${RUNTIME} \
+            --image-ids imageTag=draft-${VERSION}-${{ github.sha }}
