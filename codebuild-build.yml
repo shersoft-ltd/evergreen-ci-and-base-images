@@ -24,27 +24,6 @@ batch:
           VERSION: 18
       ignore-failure: false
 
-    - identifier: node-ci-cd-20
-      env:
-        variables:
-          RUNTIME: node
-          VERSION: 20
-      ignore-failure: false
-
-    - identifier: python-3.11
-      env:
-        variables:
-          RUNTIME: python
-          VERSION: 3.11
-      ignore-failure: false
-
-    - identifier: python-3.12
-      env:
-        variables:
-          RUNTIME: python
-          VERSION: 3.12
-      ignore-failure: false
-
 phases:
   pre_build:
     commands:
@@ -53,6 +32,9 @@ phases:
 
   build:
     commands:
+      - echo Check Docker version
+      - docker version
+
       - echo Move into correct directory
       - cd runtimes/$RUNTIME
 

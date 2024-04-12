@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "codebuild_assume" {
 }
 
 resource "aws_iam_role" "codebuild" {
-  name               = "build-${var.name}-image-codebuild"
+  name               = "${var.resource_prefix}-codebuild"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume.json
 }
 
@@ -54,11 +54,11 @@ data "aws_iam_policy_document" "codebuild" {
       "ecr:UploadLayerPart",
     ]
 
-    resources = [aws_ecr_repository.main.arn]
+    resources = ["*"]
   }
 
   statement {
-    sid = "AllowUseOfCodePipelineSourcesAndArtifacts"
+    sid    = "AllowUseOfCodePipelineSourcesAndArtifacts"
     effect = "Allow"
 
     actions = [
@@ -82,11 +82,13 @@ resource "aws_iam_role_policy" "codebuild" {
 }
 
 resource "aws_cloudwatch_log_group" "codebuild_build" {
-  name = "build-${var.name}-image-codebuild-build"
+  name = "${var.resource_prefix}-codebuild-build"
+
+  retention_in_days = 30
 }
 
 resource "aws_codebuild_project" "build" {
-  name         = "build-${var.name}-image"
+  name         = "${var.resource_prefix}-build"
   service_role = aws_iam_role.codebuild.arn
 
   logs_config {
@@ -111,18 +113,24 @@ resource "aws_codebuild_project" "build" {
 
     environment_variable {
       name  = "REGISTRY"
-      value = aws_ecr_repository.main.repository_url
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
     }
   }
 }
 
+resource "aws_cloudwatch_log_group" "codebuild_verify" {
+  name = "${var.resource_prefix}-codebuild-verify"
+
+  retention_in_days = 30
+}
+
 resource "aws_codebuild_project" "verify" {
-  name         = "verify-${var.name}-image"
+  name         = "${var.resource_prefix}-verify"
   service_role = aws_iam_role.codebuild.arn
 
   logs_config {
     cloudwatch_logs {
-      group_name = aws_cloudwatch_log_group.codebuild_build.name
+      group_name = aws_cloudwatch_log_group.codebuild_verify.name
     }
   }
 
@@ -142,18 +150,24 @@ resource "aws_codebuild_project" "verify" {
 
     environment_variable {
       name  = "REGISTRY"
-      value = aws_ecr_repository.main.repository_url
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
     }
   }
 }
 
+resource "aws_cloudwatch_log_group" "codebuild_publish" {
+  name = "${var.resource_prefix}-codebuild-publish"
+
+  retention_in_days = 30
+}
+
 resource "aws_codebuild_project" "publish" {
-  name         = "publish-${var.name}-image"
+  name         = "${var.resource_prefix}-publish"
   service_role = aws_iam_role.codebuild.arn
 
   logs_config {
     cloudwatch_logs {
-      group_name = aws_cloudwatch_log_group.codebuild_build.name
+      group_name = aws_cloudwatch_log_group.codebuild_publish.name
     }
   }
 
@@ -173,13 +187,13 @@ resource "aws_codebuild_project" "publish" {
 
     environment_variable {
       name  = "REGISTRY"
-      value = aws_ecr_repository.main.repository_url
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
     }
   }
 }
 
 resource "aws_codepipeline" "main" {
-  name          = "build-${var.name}-image"
+  name          = var.resource_prefix
   pipeline_type = "V2"
   role_arn      = aws_iam_role.codepipeline.arn
 
@@ -200,7 +214,7 @@ resource "aws_codepipeline" "main" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = var.codestar_connection_arn
+        ConnectionArn    = aws_codestarconnections_connection.github.arn
         FullRepositoryId = var.repository
         BranchName       = var.default_branch_name
       }
@@ -263,7 +277,7 @@ resource "aws_codepipeline" "main" {
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "build-${var.name}-image-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}"
+  bucket = "${var.resource_prefix}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}"
 
   force_destroy = true
 }
@@ -291,7 +305,7 @@ data "aws_iam_policy_document" "codepipeline_assume" {
 }
 
 resource "aws_iam_role" "codepipeline" {
-  name               = "build-${var.name}-image-codepipeline"
+  name               = "${var.resource_prefix}-codepipeline"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_assume.json
 }
 
@@ -316,7 +330,7 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   statement {
     effect    = "Allow"
     actions   = ["codestar-connections:UseConnection"]
-    resources = [var.codestar_connection_arn]
+    resources = [aws_codestarconnections_connection.github.arn]
   }
 
   statement {
