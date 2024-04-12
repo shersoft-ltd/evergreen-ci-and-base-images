@@ -5,7 +5,7 @@ batch:
   build-graph:
     - identifier: node_18_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "18"
@@ -14,7 +14,7 @@ batch:
 
     - identifier: node_18_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "18"
@@ -23,7 +23,7 @@ batch:
 
     - identifier: node_20_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "20"
@@ -32,7 +32,7 @@ batch:
 
     - identifier: node_20_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "20"
@@ -41,7 +41,7 @@ batch:
 
     - identifier: node_ci_cd_18_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "18"
@@ -50,7 +50,7 @@ batch:
 
     - identifier: node_ci_cd_18_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "18"
@@ -59,7 +59,7 @@ batch:
 
     - identifier: node_ci_cd_20_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "20"
@@ -68,7 +68,7 @@ batch:
 
     - identifier: node_ci_cd_20_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "20"
@@ -77,7 +77,7 @@ batch:
 
     - identifier: python_3_11_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.11"
@@ -86,7 +86,7 @@ batch:
 
     - identifier: python_3_11_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.11"
@@ -95,7 +95,7 @@ batch:
 
     - identifier: python_3_12_arm
       env:
-        compute-type: ARM_CONTAINER
+        type: ARM_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.12"
@@ -104,7 +104,7 @@ batch:
 
     - identifier: python_3_12_x86
       env:
-        compute-type: LINUX_CONTAINER
+        type: LINUX_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.12"
