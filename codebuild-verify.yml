@@ -6,6 +6,7 @@ batch:
     - identifier: node_18_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: node
           VERSION: "18"
@@ -24,6 +25,7 @@ batch:
     - identifier: node_20_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: node
           VERSION: "20"
@@ -42,6 +44,7 @@ batch:
     - identifier: node_ci_cd_18_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: node-ci-cd
           VERSION: "18"
@@ -60,6 +63,7 @@ batch:
     - identifier: node_ci_cd_20_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: node-ci-cd
           VERSION: "20"
@@ -78,6 +82,7 @@ batch:
     - identifier: python_3_11_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: python
           VERSION: "3.11"
@@ -96,6 +101,7 @@ batch:
     - identifier: python_3_12_arm
       env:
         type: ARM_CONTAINER
+        image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
         variables:
           RUNTIME: python
           VERSION: "3.12"
