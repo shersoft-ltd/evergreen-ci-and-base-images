@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
   schedule:
-    - cron:  '25 6 * * *'
+    - cron: '25 6 * * *'
 
 jobs:
   build-images:
@@ -39,7 +39,7 @@ jobs:
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github-actions
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR
@@ -87,7 +87,7 @@ jobs:
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github-actions
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR
@@ -130,7 +130,7 @@ jobs:
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github-actions
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR
