@@ -162,5 +162,5 @@ jobs:
           RUNTIME: ${{ matrix.image.runtime }}
           VERSION: ${{ matrix.image.version }}
         run: |
-          docker tag ${REGISTRY}/${RUNTIME}:draft-${{ matrix.image.version }}-${{ github.sha }} ${REGISTRY}/${RUNTIME}:${VERSION}
-          docker push ${REGISTRY}/${RUNTIME}:${VERSION}
+          docker manifest create ${REGISTRY}/${RUNTIME}:draft-${{ matrix.image.version }}-${{ github.sha }} ${REGISTRY}/${RUNTIME}:${VERSION}
+          docker manifest push ${REGISTRY}/${RUNTIME}:${VERSION}
