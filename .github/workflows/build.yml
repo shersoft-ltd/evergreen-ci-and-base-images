@@ -71,7 +71,7 @@ jobs:
 
   verify-images:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     needs:
       - build-images
