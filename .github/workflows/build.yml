@@ -65,6 +65,7 @@ jobs:
             --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${{ github.sha }} \
             --build-arg RUNTIME=${RUNTIME} \
             --build-arg VERSION=${VERSION} \
+            --push \
             .
 
   verify-images:
