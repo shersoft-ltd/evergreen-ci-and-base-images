@@ -85,6 +85,10 @@ jobs:
             version: 18
           - runtime: node
             version: 20
+          - runtime: node-ci-cd
+            version: 18
+          - runtime: node-ci-cd
+            version: 20
           - runtime: python
             version: 3.11
           - runtime: python
@@ -125,6 +129,10 @@ jobs:
           - runtime: node
             version: 18
           - runtime: node
+            version: 20
+          - runtime: node-ci-cd
+            version: 18
+          - runtime: node-ci-cd
             version: 20
           - runtime: python
             version: 3.11
