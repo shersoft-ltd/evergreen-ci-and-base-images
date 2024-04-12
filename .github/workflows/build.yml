@@ -11,6 +11,7 @@ on:
 jobs:
   build-images:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     permissions:
       contents: read
@@ -70,6 +71,7 @@ jobs:
 
   verify-images:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     needs:
       - build-images
@@ -115,6 +117,7 @@ jobs:
 
   push-images:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     needs:
       - verify-images
