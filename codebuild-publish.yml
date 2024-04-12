@@ -1,0 +1,52 @@
+version: 0.2
+
+batch:
+  fast-fail: false
+  build-graph:
+    - identifier: node-18
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: node
+          VERSION: 18
+      ignore-failure: false
+
+    - identifier: node-20
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: node
+          VERSION: 20
+      ignore-failure: false
+
+    - identifier: node-ci-cd-18
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: node-ci-cd
+          VERSION: 18
+      ignore-failure: false
+
+    - identifier: node-ci-cd-20
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: node
+          VERSION: 20
+      ignore-failure: false
+
+    - identifier: python-3.11
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: python
+          VERSION: 3.11
+      ignore-failure: false
+
+    - identifier: python-3.12
+      buildspec: codebuild-publish-inner.yml
+      env:
+        variables:
+          RUNTIME: python
+          VERSION: 3.12
+      ignore-failure: false

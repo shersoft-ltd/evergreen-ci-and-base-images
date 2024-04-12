@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Login in to Amazon ECR
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $REGISTRY
+
+  build:
+    commands:
+      - echo Move into correct directory
+      - cd runtimes/$RUNTIME
+
+      - echo Build, tag, and push draft image to Amazon ECR
+      - docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${CODEBUILD_BUILD_NUMBER} \
+        --build-arg RUNTIME=${RUNTIME} \
+        --build-arg VERSION=${VERSION} \
+        --push \
+        .

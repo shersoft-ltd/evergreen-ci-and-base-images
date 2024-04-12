@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Login in to Amazon ECR
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REGISTRY
+
+  build:
+    commands:
+      - echo Publish image
+      - docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${CODEBUILD_BUILD_NUMBER}
+
+      - echo Delete draft tag
+      - aws ecr \
+        batch-delete-image \
+        --repository-name ${RUNTIME} \
+        --image-ids imageTag=draft-${VERSION}-${CODEBUILD_BUILD_NUMBER}
