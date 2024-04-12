@@ -1,4 +1,4 @@
-name: 'Daily image update'
+name: 'Build, verify and publish'
 
 on:
   push:
@@ -10,6 +10,8 @@ on:
 
 jobs:
   build-images:
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
         image:
@@ -56,8 +58,11 @@ jobs:
             .
 
   verify-images:
+    runs-on: ubuntu-latest
+
     needs:
       - build-images
+
     strategy:
       matrix:
         image:
@@ -90,8 +95,11 @@ jobs:
         run: docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:${IMAGE_TAG}
 
   push-images:
+    runs-on: ubuntu-latest
+
     needs:
       - verify-images
+
     strategy:
       matrix:
         image:
