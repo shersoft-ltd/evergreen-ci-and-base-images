@@ -1,7 +1,7 @@
 ARG RUNTIME
 ARG VERSION
 
-FROM node:${VERSION}
+FROM python:${VERSION}
 
 # Try and minimise active vulnerabilities by updating all OS packages
 RUN apt-get update && \
