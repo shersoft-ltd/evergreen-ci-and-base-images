@@ -132,4 +132,4 @@ phases:
       - cd runtimes/$RUNTIME
 
       - echo Build, tag, and push draft image to Amazon ECR
-      - docker buildx build --platform linux/amd64,linux/arm64 --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_BUILD_NUMBER} --build-arg RUNTIME=${RUNTIME} --build-arg VERSION=${VERSION} --push .
+      - docker buildx build --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_BUILD_NUMBER} --build-arg RUNTIME=${RUNTIME} --build-arg VERSION=${VERSION} --push .
