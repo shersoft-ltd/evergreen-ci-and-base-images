@@ -62,11 +62,12 @@ data "aws_iam_policy_document" "codebuild" {
     effect = "Allow"
 
     actions = [
+      "s3:GetBucketVersioning",
       "s3:GetObject",
       "s3:GetObjectVersion",
-      "s3:GetBucketVersioning",
-      "s3:PutObjectAcl",
+      "s3:ListBucket",
       "s3:PutObject",
+      "s3:PutObjectAcl",
     ]
 
     resources = [
@@ -276,9 +277,8 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName      = aws_codebuild_project.build.name,
-        BatchEnabled     = true,
-        CombineArtifacts = true,
+        ProjectName  = aws_codebuild_project.build.name,
+        BatchEnabled = true,
       }
     }
   }
@@ -296,9 +296,8 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName      = aws_codebuild_project.verify.name,
-        BatchEnabled     = true,
-        CombineArtifacts = true,
+        ProjectName  = aws_codebuild_project.verify.name,
+        BatchEnabled = true,
       }
     }
   }
@@ -316,9 +315,8 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName      = aws_codebuild_project.publish.name,
-        BatchEnabled     = true,
-        CombineArtifacts = true,
+        ProjectName  = aws_codebuild_project.publish.name,
+        BatchEnabled = true,
       }
     }
   }
