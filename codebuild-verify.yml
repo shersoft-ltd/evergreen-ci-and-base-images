@@ -3,46 +3,112 @@ version: 0.2
 batch:
   fast-fail: false
   build-graph:
-    - identifier: node_18
+    - identifier: node_18_arm
       env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "18"
+          ARCHITECTURE: arm
       ignore-failure: false
 
-    - identifier: node_20
+    - identifier: node_18_x86
       env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: node
+          VERSION: "18"
+          ARCHITECTURE: x86
+      ignore-failure: false
+
+    - identifier: node_20_arm
+      env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: node
           VERSION: "20"
+          ARCHITECTURE: arm
       ignore-failure: false
 
-    - identifier: node_ci_cd_18
+    - identifier: node_20_x86
       env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: node
+          VERSION: "20"
+          ARCHITECTURE: x86
+      ignore-failure: false
+
+    - identifier: node_ci_cd_18_arm
+      env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "18"
+          ARCHITECTURE: arm
       ignore-failure: false
 
-    - identifier: node_ci_cd_20
+    - identifier: node_ci_cd_18_x86
       env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: node-ci-cd
+          VERSION: "18"
+          ARCHITECTURE: x86
+      ignore-failure: false
+
+    - identifier: node_ci_cd_20_arm
+      env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: node-ci-cd
           VERSION: "20"
+          ARCHITECTURE: arm
       ignore-failure: false
 
-    - identifier: python_3_11
+    - identifier: node_ci_cd_20_x86
       env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: node-ci-cd
+          VERSION: "20"
+          ARCHITECTURE: x86
+      ignore-failure: false
+
+    - identifier: python_3_11_arm
+      env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.11"
+          ARCHITECTURE: arm
       ignore-failure: false
 
-    - identifier: python_3_12
+    - identifier: python_3_11_x86
       env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: python
+          VERSION: "3.11"
+          ARCHITECTURE: x86
+      ignore-failure: false
+
+    - identifier: python_3_12_arm
+      env:
+        compute-type: ARM_CONTAINER
         variables:
           RUNTIME: python
           VERSION: "3.12"
+          ARCHITECTURE: arm
+      ignore-failure: false
+
+    - identifier: python_3_12_x86
+      env:
+        compute-type: LINUX_CONTAINER
+        variables:
+          RUNTIME: python
+          VERSION: "3.12"
+          ARCHITECTURE: x86
       ignore-failure: false
 
 phases:
@@ -54,4 +120,4 @@ phases:
   build:
     commands:
       - echo Test built image
-      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${CODEBUILD_BUILD_NUMBER}
+      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_BUILD_NUMBER}

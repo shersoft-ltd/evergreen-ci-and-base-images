@@ -54,10 +54,7 @@ phases:
   build:
     commands:
       - echo Publish image
-      - docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${CODEBUILD_BUILD_NUMBER}
+      - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-${CODEBUILD_BUILD_NUMBER} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-${CODEBUILD_BUILD_NUMBER}
 
-      - echo Delete draft tag
-      - aws ecr \
-        batch-delete-image \
-        --repository-name ${RUNTIME} \
-        --image-ids imageTag=draft-${VERSION}-${CODEBUILD_BUILD_NUMBER}
+      - echo Delete draft tags
+      - aws ecr batch-delete-image --repository-name ${RUNTIME} --image-ids imageTag=draft-${VERSION}-arm-${CODEBUILD_BUILD_NUMBER} imageTag=draft-${VERSION}-x86-${CODEBUILD_BUILD_NUMBER}
