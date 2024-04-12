@@ -8,5 +8,5 @@ RUN apt-get update && \
     apt-get dist-upgrade --yes && \
     rm -rf /var/lib/apt/lists/*
 
-COPY self-test.js /usr/local/bin/self-test.py
+COPY self-test.py /usr/local/bin/self-test.py
 COPY self-test.sh /usr/local/bin/self-test
