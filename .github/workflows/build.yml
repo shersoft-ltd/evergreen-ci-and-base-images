@@ -1,0 +1,129 @@
+name: 'Daily image update'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron:  '25 6 * * *'
+
+jobs:
+  build-images:
+    strategy:
+      matrix:
+        image:
+          - runtime: node
+            version: 18
+          - runtime: node
+            version: 20
+          - runtime: node-ci-cd
+            version: 18
+          - runtime: node-ci-cd
+            version: 20
+          - runtime: python
+            version: 3.12
+          - runtime: python
+            version: 3.13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR
+        id: login_to_ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push draft image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
+          IMAGE_TAG: draft-${VERSION}-${{ github.sha }}
+          RUNTIME: ${{ matrix.image.runtime }}
+          VERSION: ${{ matrix.image.version }}
+        working-directory: runtimes/${{ matrix.image.runtime }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag ${REGISTRY}/${RUNTIME}:${IMAGE_TAG} \
+            --build-arg RUNTIME=${RUNTIME} \
+            --build-arg VERSION=${VERSION} \
+            .
+
+  verify-images:
+    needs:
+      - build-images
+    strategy:
+      matrix:
+        image:
+          - runtime: node
+            version: 18
+          - runtime: node
+            version: 20
+          - runtime: python
+            version: 3.12
+          - runtime: python
+            version: 3.13
+
+    steps:
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR
+        id: login_to_ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Run verification script
+        env:
+          REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
+          IMAGE_TAG: draft-${VERSION}-${{ github.sha }}
+          RUNTIME: ${{ matrix.image.runtime }}
+          VERSION: ${{ matrix.image.version }}
+        run: docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:${IMAGE_TAG}
+
+  push-images:
+    needs:
+      - verify-images
+    strategy:
+      matrix:
+        image:
+          - runtime: node
+            version: 18
+          - runtime: node
+            version: 20
+          - runtime: python
+            version: 3.12
+          - runtime: python
+            version: 3.13
+
+    rules:
+      - if: github.ref == 'refs/heads/main' && github.event_name == 'schedule'
+
+    steps:
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${AWS_ACCOUNT_ID}:role/github-actions
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR
+        id: login_to_ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Publish Docker image without draft prefix
+        env:
+          REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
+          DRAFT_IMAGE_TAG: draft-${VERSION}-${{ github.sha }}
+          RUNTIME: ${{ matrix.image.runtime }}
+          VERSION: ${{ matrix.image.version }}
+        run: |
+          docker tag ${REGISTRY}/${RUNTIME}:${DRAFT_IMAGE_TAG} ${REGISTRY}/${RUNTIME}:${VERSION}
+          docker push ${REGISTRY}/${RUNTIME}:${VERSION}
