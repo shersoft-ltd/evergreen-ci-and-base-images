@@ -74,6 +74,18 @@ data "aws_iam_policy_document" "codebuild" {
       "${aws_s3_bucket.codepipeline_bucket.arn}/*"
     ]
   }
+
+  statement {
+    sid    = "AllowRunningBatchedJobs"
+    effect = "Allow"
+
+    actions = [
+      "codebuild:BatchGetBuilds",
+      "codebuild:StartBuild",
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role_policy" "codebuild" {
@@ -90,6 +102,16 @@ resource "aws_cloudwatch_log_group" "codebuild_build" {
 resource "aws_codebuild_project" "build" {
   name         = "${var.resource_prefix}-build"
   service_role = aws_iam_role.codebuild.arn
+
+  build_batch_config {
+    service_role    = aws_iam_role.codebuild.arn
+    timeout_in_mins = 10
+
+    restrictions {
+      compute_types_allowed  = ["BUILD_GENERAL1_SMALL"]
+      maximum_builds_allowed = 100
+    }
+  }
 
   logs_config {
     cloudwatch_logs {
@@ -128,6 +150,16 @@ resource "aws_codebuild_project" "verify" {
   name         = "${var.resource_prefix}-verify"
   service_role = aws_iam_role.codebuild.arn
 
+  build_batch_config {
+    service_role    = aws_iam_role.codebuild.arn
+    timeout_in_mins = 10
+
+    restrictions {
+      compute_types_allowed  = ["BUILD_GENERAL1_SMALL"]
+      maximum_builds_allowed = 100
+    }
+  }
+
   logs_config {
     cloudwatch_logs {
       group_name = aws_cloudwatch_log_group.codebuild_verify.name
@@ -164,6 +196,16 @@ resource "aws_cloudwatch_log_group" "codebuild_publish" {
 resource "aws_codebuild_project" "publish" {
   name         = "${var.resource_prefix}-publish"
   service_role = aws_iam_role.codebuild.arn
+
+  build_batch_config {
+    service_role    = aws_iam_role.codebuild.arn
+    timeout_in_mins = 10
+
+    restrictions {
+      compute_types_allowed  = ["BUILD_GENERAL1_SMALL"]
+      maximum_builds_allowed = 100
+    }
+  }
 
   logs_config {
     cloudwatch_logs {
@@ -234,7 +276,9 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.build.name
+        ProjectName      = aws_codebuild_project.build.name,
+        BatchEnabled     = true,
+        CombineArtifacts = true,
       }
     }
   }
@@ -252,7 +296,9 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.verify.name
+        ProjectName      = aws_codebuild_project.verify.name,
+        BatchEnabled     = true,
+        CombineArtifacts = true,
       }
     }
   }
@@ -270,7 +316,9 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.publish.name
+        ProjectName      = aws_codebuild_project.publish.name,
+        BatchEnabled     = true,
+        CombineArtifacts = true,
       }
     }
   }
@@ -334,11 +382,12 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   }
 
   statement {
+    sid    = "AllowStartingBatches"
     effect = "Allow"
 
     actions = [
-      "codebuild:BatchGetBuilds",
-      "codebuild:StartBuild",
+      "codebuild:BatchGetBuildBatches",
+      "codebuild:StartBuildBatch",
     ]
 
     resources = ["*"]
