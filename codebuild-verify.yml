@@ -126,4 +126,4 @@ phases:
   build:
     commands:
       - echo Test built image
-      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_BUILD_NUMBER}
+      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}
