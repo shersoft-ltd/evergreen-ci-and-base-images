@@ -125,6 +125,9 @@ phases:
 
   build:
     commands:
+      - echo Debug environment
+      - env
+
       - echo Check Docker version
       - docker version
 
