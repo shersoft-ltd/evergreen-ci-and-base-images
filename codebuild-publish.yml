@@ -53,8 +53,14 @@ phases:
 
   build:
     commands:
+      - echo Publish ARM image
+      - docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION}-arm ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION}
+
+      - echo Publish X86 image
+      - docker buildx imagetools create --tag ${REGISTRY}/${RUNTIME}:${VERSION}-x86 ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}
+
       - echo Create multi-arch image
-      - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:${VERSION}-arm ${REGISTRY}/${RUNTIME}:${VERSION}-x86
 
       - echo Publish image
       - docker manifest push ${REGISTRY}/${RUNTIME}:${VERSION}
