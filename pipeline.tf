@@ -273,7 +273,7 @@ resource "aws_codepipeline" "main" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
+      output_artifacts = []
       version          = "1"
 
       configuration = {
@@ -292,7 +292,7 @@ resource "aws_codepipeline" "main" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["verify_output"]
+      output_artifacts = []
       version          = "1"
 
       configuration = {
@@ -311,7 +311,7 @@ resource "aws_codepipeline" "main" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["publish_output"]
+      output_artifacts = []
       version          = "1"
 
       configuration = {
