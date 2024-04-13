@@ -53,8 +53,11 @@ phases:
 
   build:
     commands:
-      - echo Publish image
+      - echo Create multi-arch image
       - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}
+
+      - echo Publish image
+      - docker manifest push ${REGISTRY}/${RUNTIME}:${VERSION}
 
       - echo Delete draft tags
       - aws ecr batch-delete-image --repository-name ${RUNTIME} --image-ids imageTag=draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION} imageTag=draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}
