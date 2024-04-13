@@ -54,7 +54,7 @@ phases:
   build:
     commands:
       - echo Publish image
-      - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-$(git rev-parse HEAD) ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-$(git rev-parse HEAD)
+      - docker manifest create ${REGISTRY}/${RUNTIME}:${VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION} ${REGISTRY}/${RUNTIME}:draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}
 
       - echo Delete draft tags
-      - aws ecr batch-delete-image --repository-name ${RUNTIME} --image-ids imageTag=draft-${VERSION}-arm-$(git rev-parse HEAD) imageTag=draft-${VERSION}-x86-$(git rev-parse HEAD)
+      - aws ecr batch-delete-image --repository-name ${RUNTIME} --image-ids imageTag=draft-${VERSION}-arm-${CODEBUILD_RESOLVED_SOURCE_VERSION} imageTag=draft-${VERSION}-x86-${CODEBUILD_RESOLVED_SOURCE_VERSION}

@@ -125,9 +125,6 @@ phases:
 
   build:
     commands:
-      - echo Debug environment
-      - env
-
       - echo Check Docker version
       - docker version
 
@@ -135,4 +132,4 @@ phases:
       - cd runtimes/$RUNTIME
 
       - echo Build, tag, and push draft image to Amazon ECR
-      - docker buildx build --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-$(git rev-parse HEAD) --build-arg RUNTIME=${RUNTIME} --build-arg VERSION=${VERSION} --push .
+      - docker buildx build --tag ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_RESOLVED_SOURCE_VERSION} --build-arg RUNTIME=${RUNTIME} --build-arg VERSION=${VERSION} --push .

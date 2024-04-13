@@ -125,8 +125,5 @@ phases:
 
   build:
     commands:
-      - echo Debug environment
-      - env
-
       - echo Test built image
-      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-$(git rev-parse HEAD)
+      - docker run --entrypoint self-test ${REGISTRY}/${RUNTIME}:draft-${VERSION}-${ARCHITECTURE}-${CODEBUILD_RESOLVED_SOURCE_VERSION}
